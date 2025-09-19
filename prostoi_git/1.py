@@ -1,2 +1,1 @@
-print("NOOOOOO" \
-"")
+print("NOOOOOO")
