@@ -1,0 +1,96 @@
+git config --global user.name "Your Name" Устанавливает имя автора коммитов (будет видно на GitHub).
+git config --global user.email "your_email@whatever.com" Устанавливает email автора коммитов (тоже отображается на GitHub).
+
+git config --global init.defaultBranch main Делает так, чтобы новая ветка по умолчанию называлась main, а не master.
+
+git config --global core.autocrlf input Настройка перевода строк: оставляет Unix-стиль (LF) при сохранении, а входящие CRLF (Windows) переводит в LF.
+git config --global core.safecrlf warn Предупреждает, если из-за перевода строк могут появиться проблемы.
+
+mkdir work Создаёт новую директорию (папку) work.
+cd work Переходит в папку work.
+touch hello.html Создаёт пустой файл hello.html в текущей директории
+
+git init Инициализирует новый Git-репозиторий в текущей директории (создаёт скрытую папку .git).
+
+git add hello.html  Добавляет файл hello.html в staging area (готов к коммиту).
+git commit -m "Initial Commit" Создаёт первый коммит с добавленным файлом.
+
+git status Показывает текущее состояние репозитория (какие файлы изменены/подготовлены).
+
+git branch -m master main Переименовывает ветку master в main.
+
+git add hello.html Добавляет (снова) файл hello.html в staging (например, если он был изменён).
+git status Снова показывает состояние репозитория.
+
+git add a.html 
+git add b.html Добавляет два файла (a.html и b.html) в staging area.
+git commit -m "Changes for a and b" Создаёт коммит с изменениями для файлов a.html и b.html.
+git add c.html Добавляет файл c.html в staging.
+git commit -m "Unrelated change to c" Создаёт отдельный коммит только с изменениями в файле c.html.
+
+git commit Запускает коммит в режиме по умолчанию — откроется редактор, где нужно ввести сообщение вручную.
+
+git add hello.html Добавляет изменения в файле hello.html в staging area (готово к коммиту).
+
+git commit -m "Added standard HTML page tags" 
+git status Проверяет состояние: какие файлы изменены, добавлены или уже закоммичены.
+
+git add . Добавляет все файлы и изменения в текущей директории в staging.
+git status Показывает текущее состояние после добавления всех файлов.
+
+git commit -m "Added HTML header" Делает новый коммит с сообщением "Added HTML header".
+
+git log Отображает всю историю коммитов (автор, дата, сообщение, хэш).
+
+git log --pretty=oneline Показывает историю коммитов в одну строку: только хэш + сообщение (удобно для быстрого просмотра).
+
+git log --oneline --max-count=2 Показывает только 2 последних коммита, в сокращённом виде (хэш + сообщение).
+git log --oneline --since="5 minutes ago" Показывает все коммиты, сделанные за последние 5 минут.
+git log --oneline --until="5 minutes ago" Показывает коммиты, которые были сделаны до 5 минут назад.
+git log --oneline --author="Your Name" Отображает только коммиты, сделанные указанным автором.
+git log --oneline --all Показывает все коммиты во всех ветках (не только текущей).
+
+git log --all --pretty=format:"%h %cd %s (%an)" --since="7 days ago" Отображает все коммиты за последние 7 дней, форматируя каждую строку так:
+короткий_хэш дата сообщение (автор)
+
+git log --pretty=format:"%h %ad | %s%d [%an]" --date=short  Показывает коммиты в формате:
+короткий_хэш дата | сообщение (ветка/тег) [автор],
+где дата выводится в коротком виде (ГГГГ-ММ-ДД).
+
+git checkout v1^ Переключает на родительский коммит тега v1 (на один шаг раньше).
+cat hello.html Показывает, как выглядел файл hello.html в том состоянии.
+
+git tag v1-beta Ставит ещё один тег (v1-beta) на текущем коммите.
+git log История теперь содержит оба тега (v1 и v1-beta).
+
+git checkout v1
+git checkout v1-beta Переключается по тегам — на разные версии проекта.
+
+git tag Список всех тегов в репозитории.
+
+git log main --all Показывает историю всех веток вместе с веткой main.
+
+git switch main Возвращает обратно на основную ветку main.
+
+git restore hello.html Отменяет изменения в файле hello.html (возвращает его к последнему сохранённому коммиту).
+git status Проверяет состояние файлов (покажет, что изменений больше нет).
+cat hello.html Выводит файл в том виде, как в последнем коммите.
+
+git add hello.html Добавляет hello.html в staging area (подготовка к коммиту).
+
+git restore --staged hello.html Убирает файл из staging (он снова считается просто изменённым, но не подготовленным).
+
+git restore hello.html Отменяет изменения полностью (возвращает к версии из коммита).
+git status Показывает текущее состояние (файл чистый, без изменений).
+
+git config --global format.pretty '%h %ad | %s%d [%an]' Настраивает формат логов по умолчанию (такой, как выше).
+git config --global log.date short Настраивает дату в логах, чтобы отображалась в коротком формате (например, 2025-09-17).
+
+git checkout <hash> Переключает репозиторий в состояние конкретного коммита (по его хэшу).
+cat hello.html Показывает содержимое файла hello.html.
+
+git switch main Возвращает обратно на ветку main.
+cat hello.html Опять показывает содержимое файла (теперь из ветки main).
+
+git tag v1 Создаёт тег v1 (метку на текущем коммите).
+git log Показывает историю коммитов (тег будет виден).
