@@ -1,50 +1,54 @@
-import pygame, time
+import pygame, datetime
 
 pygame.init()
 
+screen = pygame.display.set_mode((900 , 900))
 
-WIDTH, HEIGHT = 1410 , 900
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
+pygame.display.set_caption("clock,  clock, clock")
 
-clock_face = pygame.image.load("base_micky.jpg").convert_alpha()   
-minute_hand = pygame.image.load("minute.png").convert_alpha()      
-second_hand = pygame.image.load("second.png").convert_alpha()      
+clock = pygame.image.load("base_micky.png")
+secundy = pygame.image.load("second.png")
+minyty = pygame.image.load("minute.png")
+center = (450 , 450)
 
+clock = pygame.transform.scale(clock , (800 , 600))
+secundy = pygame.transform.scale(secundy , ( 60, 500))
+minyty = pygame.transform.scale(minyty , (600 , 600))
 
+def peremeshenie(kartina, ygl, center):
+    kry = pygame.transform.rotate(kartina, ygl)
+    pryamoygol = kry.get_rect(center = center)
+    return kry,  pryamoygol
 
-center = (WIDTH // 2, HEIGHT // 2)
+go = True
 
+clock_tick = pygame.time.Clock()
 
-mw, mh = minute_hand.get_size()
-sw, sh = second_hand.get_size()
+while go:
+    for vremya in pygame.event.get():
+        if vremya.type == pygame.QUIT:
+            go = False
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    screen.fill("white")
+    seychas = datetime.datetime.now()
+    sec = seychas.second + seychas.microsecond/ 1000000
+    min = seychas.minute + sec / 60
+    sec_ygl = sec*6
+    min_ygl = min*6
 
-    screen.fill((0, 0, 0))
-    screen.blit(clock_face, (0, 0))
+    sec_anime, sec_r_anime = peremeshenie(secundy,-sec_ygl, center)
+    min_anime, min_r_anime = peremeshenie(minyty,-min_ygl, center)
 
-    now = time.localtime()
-    sec = now.tm_sec
-    minute = now.tm_min
+    screen.blit(clock, clock.get_rect(center=center))
+    screen.blit(min_anime, min_r_anime)
+    screen.blit(sec_anime, sec_r_anime)
 
-    second_angle = -sec * 6       
-    minute_angle = -minute * 6 - sec * 0.1  
-
-    rot_minute = pygame.transform.rotate(minute_hand, minute_angle)
-    rot_second = pygame.transform.rotate(second_hand, second_angle)
-
-    min_rect = rot_minute.get_rect(center=center)
-    sec_rect = rot_second.get_rect(center=center)
-
-    screen.blit(rot_minute, min_rect.topleft)
-    screen.blit(rot_second, sec_rect.topleft)
-
-    pygame.display.flip()
-    clock.tick(30)
+    pygame.display.update()
+    clock_tick.tick(99)
 
 pygame.quit()
+
+
+
+
+    
