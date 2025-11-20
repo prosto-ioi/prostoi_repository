@@ -45,8 +45,12 @@ def draw_figure(figure_index, color_index):
         pygame.draw.polygon(screen, colors[color_index], [(prev_x, prev_y), (curr_x, curr_y), (curr_x + abs(curr_y-prev_y)/2, curr_y + abs(curr_x-prev_x)/2)], THICKNESS)
     elif figure_index == 5: # Equilateral Triangle
         pygame.draw.polygon(screen, colors[color_index], [(prev_x, prev_y), (curr_x + abs(curr_y-prev_y)/2, curr_y + abs(curr_x-prev_x)/2), (curr_x - abs(curr_y-prev_y)/2, curr_y - abs(curr_x-prev_x)/2)], THICKNESS)
+    elif figure_index == 6: #Square
+        pygame.draw.rect(screen, colors[color_index], pygame.Rect(min(prev_x, curr_x), min(prev_y, curr_y), max(abs(curr_x - prev_x), abs(curr_y - prev_y)), max(abs(curr_x - prev_x), abs(curr_y - prev_y))), THICKNESS)
+    elif figure_index == 7: #Rhombus
+        pygame.draw.polygon(screen, colors[color_index], [( (prev_x+curr_x)//2, prev_y ), ( curr_x, (prev_y+curr_y)//2 ), ( (prev_x+curr_x)//2, curr_y ), ( prev_x, (prev_y+curr_y)//2 )], THICKNESS)
 
-figures = ['Line', 'Rectangle', 'Circle', 'Eraser', 'Right Triangle', 'Equilateral Triangle']
+figures = ['Line', 'Rectangle', 'Circle', 'Eraser', 'Right Triangle', 'Equilateral Triangle', 'Square', 'Rhombus']
 
 figure_index = 0
 color_index = 0
