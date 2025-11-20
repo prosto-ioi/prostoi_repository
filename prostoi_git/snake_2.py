@@ -39,17 +39,17 @@ class Snake:
     def move(self):
         new_head = Point(self.body[0].x + self.dx, self.body[0].y + self.dy)
 
-        # Проверка на столкновение со стеной
+# Проверка на столкновение со стеной
         if (new_head.x < 0 or new_head.x >= WIDTH // CELL or
             new_head.y < 0 or new_head.y >= HEIGHT // CELL):
-            return False  # Конец игры
+            return False  
 
-        # Проверка на столкновение с собой
+# Проверка на столкновение с собой
         for segment in self.body:
             if new_head.x == segment.x and new_head.y == segment.y:
                 return False
 
-        # движение тело
+# движение тело
         self.body.insert(0, new_head)
         self.body.pop()
         return True
@@ -72,12 +72,26 @@ class Food:
         while True:
             self.x = random.randint(0, WIDTH // CELL - 1)
             self.y = random.randint(0, HEIGHT // CELL - 1)
+
+# еда не должна появляться на змее
             if not any(p.x == self.x and p.y == self.y for p in snake.body):
                 break
+        
+# вес еды
+        self.weight = random.choice([1, 2, 3])
+
+# цвет еды по весу
+        self.color = {1: GREEN, 2: YELLOW, 3: RED}[self.weight]
+
+# таймер жизни
+        self.spawn_time = pygame.time.get_ticks()   
+        self.lifetime = random.randint(3000, 6000)  
+
+    def is_expired(self):
+        return pygame.time.get_ticks() - self.spawn_time >= self.lifetime
 
     def draw(self):
-        pygame.draw.rect(screen, GREEN, (self.x * CELL, self.y * CELL, CELL, CELL))
-
+        pygame.draw.rect(screen, self.color, (self.x * CELL, self.y * CELL, CELL, CELL))
 
 def draw_grid():
     for x in range(0, WIDTH, CELL):
@@ -99,7 +113,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # управление
+# управление
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP] and snake.dy != 1:
         snake.dx, snake.dy = 0, -1
@@ -110,28 +124,38 @@ while running:
     elif keys[pygame.K_RIGHT] and snake.dx != -1:
         snake.dx, snake.dy = 1, 0
 
-    # движение змеи и окончание игры
+# движение змеи и окончание игры
     if not snake.move():
         running = False  
-
-    # проверка еды
+# проверка еды
     head = snake.body[0]
-    if head.x == food.x and head.y == food.y:
-        snake.score += 1
-        snake.foods_eaten += 1
-        snake.grow()
+
+    # еда исчезает по таймеру
+    if food.is_expired():
         food.randomize_position(snake)
 
-        # логика ускорения 
+    # змея съела еду
+    elif head.x == food.x and head.y == food.y:
+        snake.score += food.weight
+        snake.foods_eaten += 1
+
+    # растёт на вес еды
+        for _ in range(food.weight):
+            snake.grow()
+
+        food.randomize_position(snake)
+
+    # логика ускорения
         if snake.foods_eaten % 3 == 0:
             snake.level += 1
             FPS += 2
+
 # вызов основных функций
     draw_grid()
     food.draw()
     snake.draw()
 
-    # показ очков и уровеня 
+# показ очков и уровеня 
     score_text = font.render(f"Score: {snake.score}", True, WHITE)
     level_text = font.render(f"Level: {snake.level}", True, WHITE)
     screen.blit(score_text, (10, 10))
