@@ -1,5 +1,5 @@
 import psycopg2
-from config import load_config
+from neon.config import load_config
 
 def create_tables():
     """"Create tables in the postgreSQL database"""

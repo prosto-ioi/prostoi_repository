@@ -1,5 +1,5 @@
 import psycopg2
-from config import load_config
+from neon.config import load_config
 
 def insert_vendor(vendor_name):
     """Insert a new vendor into the vendors table"""
