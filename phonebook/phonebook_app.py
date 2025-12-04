@@ -1,97 +1,108 @@
 from connect import get_connection
 from insert_csv import insert_from_csv
 
+
 def insert_user():
     name = input("Enter name: ")
     phone = input("Enter phone: ")
 
-    conn = get_connection()
-    cur = conn.cursor()
+    sql = "CALL upsert_user(%s, %s);"
 
-    cur.execute("""
-        INSERT INTO phonebook(first_name, phone)
-        VALUES (%s, %s)
-        ON CONFLICT (phone) DO NOTHING;
-    """, (name, phone))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-    print("User inserted!")
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql, (name, phone))
+                conn.commit()
+        print("User inserted/updated via procedure!")
+    except Exception as error:
+        print("Error:", error)
 
 
 def update_user():
-    phone = input("Enter phone of user to update: ")
+    name = input("Enter username to update: ")
+    phone = input("Enter new phone: ")
 
-    print("1) Change name")
-    print("2) Change phone")
-    choice = input("Choose: ")
+    sql = "CALL upsert_user(%s, %s);"
 
-    conn = get_connection()
-    cur = conn.cursor()
-
-    if choice == "1":
-        new_name = input("Enter new name: ")
-        cur.execute("UPDATE phonebook SET first_name=%s WHERE phone=%s",
-                    (new_name, phone))
-
-    elif choice == "2":
-        new_phone = input("Enter new phone: ")
-        cur.execute("UPDATE phonebook SET phone=%s WHERE phone=%s",
-                    (new_phone, phone))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-    print("Updated!")
-
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql, (name, phone))
+                conn.commit()
+        print("Updated via procedure!")
+    except Exception as error:
+        print("Error:", error)
 
 def search_users():
-    print("1) Find by name")
-    print("2) Find by phone")
-    choice = input("Choose: ")
+    pattern = input("Enter part of name or phone: ")
 
-    conn = get_connection()
-    cur = conn.cursor()
+    sql = "SELECT * FROM search_pattern(%s);"
 
-    if choice == "1":
-        name = input("Name: ")
-        cur.execute("SELECT * FROM phonebook WHERE first_name ILIKE %s",
-                    ('%' + name + '%',))
-    else:
-        phone = input("Phone: ")
-        cur.execute("SELECT * FROM phonebook WHERE phone=%s", (phone,))
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql, (pattern,))
+                rows = cur.fetchall()
 
-    rows = cur.fetchall()
+        for r in rows:
+            print(r)
 
-    for r in rows:
-        print(r)
+    except Exception as error:
+        print("Error:", error)
 
-    cur.close()
-    conn.close()
+
+def pagination():
+    limit = int(input("Enter limit: "))
+    offset = int(input("Enter offset: "))
+
+    sql = "SELECT * FROM get_page(%s, %s);"
+
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql, (limit, offset))
+                rows = cur.fetchall()
+
+        for r in rows:
+            print(r)
+
+    except Exception as error:
+        print("Error:", error)
 
 
 def delete_user():
-    phone = input("Phone to delete: ")
+    print("1) Delete by name")
+    print("2) Delete by phone")
+    choice = input("Choose: ")
 
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM phonebook WHERE phone=%s", (phone,))
+    if choice == "1":
+        name = input("Enter name: ")
+        phone = None
+    else:
+        name = None
+        phone = input("Enter phone: ")
 
-    conn.commit()
-    cur.close()
-    conn.close()
-    print("Deleted!")
+    sql = "CALL delete_user_proc(%s, %s);"
+
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql, (name, phone))
+                conn.commit()
+        print("Deleted via procedure!")
+    except Exception as error:
+        print("Error:", error)
 
 
 def menu():
     while True:
         print("\n MENU ")
-        print("1) Insert user manually")
-        print("2) Upload csv")
+        print("1) Insert user")
+        print("2) Upload CSV")
         print("3) Update user")
-        print("4) Search user")
-        print("5) Delete user")
+        print("4) Search users")
+        print("5) Pagination")
+        print("6) Delete user")
         print("0) Exit")
 
         choice = input("Choose option: ")
@@ -105,11 +116,14 @@ def menu():
         elif choice == "4":
             search_users()
         elif choice == "5":
+            pagination()
+        elif choice == "6":
             delete_user()
         elif choice == "0":
             break
         else:
             print("Wrong input!")
+
 
 if __name__ == '__main__':
     menu()
