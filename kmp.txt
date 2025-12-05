@@ -1,0 +1,68 @@
+Dijkstra(Graph, start):
+
+    для каждой вершины v в Graph:
+        distance[v] = бесконечность 
+        previous[v] = NULL
+
+    distance[start] = 0
+
+    Q = множество всех вершин Graph
+
+    пока Q не пусто:
+
+        u = вершина из Q с минимальным distance[u]
+
+        удалить u из Q
+
+        для каждого соседа v вершины u:
+            вес = weight(u, v)
+
+            если distance[u] + вес < distance[v]:
+                distance[v] = distance[u] + вес
+                previous[v] = u
+
+    вернуть distance[], previous[]
+
+сравнение примс и крускал 
+
+
+Prim’s Algorithm:
+Grows one MST by always choosing the smallest edge connected to the current tree, best for dense graphs.
+Complexity: O(E log V) with a priority queue.
+Kruskal’s Algorithm:
+Sorts all edges and adds them from smallest to largest while avoiding cycles using Union-Find.
+Best for sparse graphs.
+Complexity: O(E log V).
+Similarities:
+Both are greedy algorithms.Both find a Minimum Spanning Tree in a connected, weighted, undirected graph.
+Differences:
+Prim grows one tree from a starting vertex; Kruskal builds many small trees and merges them.Prim uses priority queues; Kruskal relies on sorting + Union-Find.
+Applications:
+Prim: network expansion, dense network design.
+Kruskal: clustering, road networks, sparse graphs.
+
+аджекенси
+
+An adjacency matrix is a V×V table where each cell shows whether an edge exists between two vertices. It allows constant-time edge lookup and is simple to use, but it requires O(V²) memory and is inefficient for sparse graphs. An adjacency list stores, for each vertex, a list of its neighbors. It uses only O(V + E) memory, making it much better for large sparse graphs, and it allows fast iteration over neighbors, but checking whether a specific edge exists is slower. In terms of complexity, algorithms like BFS, DFS, Dijkstra, and Prim run slower on adjacency matrices because they must scan entire rows, giving O(V²), while adjacency lists provide faster performance of O(V + E) or O(E log V) with priority queues. In general, adjacency matrices are preferred for dense graphs, while adjacency lists are preferred for sparse graphs.
+
+бфс 
+
+BFS(Graph, start):
+
+    create an empty queue Q
+    create a set visited
+
+    enqueue start into Q
+    add start to visited
+
+    while Q is not empty:
+        node = dequeue Q
+        process(node)
+
+        for each neighbor in Graph[node]:
+            if neighbor not in visited:
+                add neighbor to visited
+                enqueue neighbor into Q
+
+
+
